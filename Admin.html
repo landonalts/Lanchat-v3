@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Futuristic Admin Login</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@500&display=swap');
+
+  body {
+    margin: 0;
+    background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+    font-family: 'Orbitron', sans-serif;
+    color: #0ff;
+    overflow: hidden;
+  }
+
+  /* Admin Button */
+  #adminBtn {
+    position: fixed;
+    top: 30px;
+    right: 30px;
+    padding: 15px 30px;
+    border: none;
+    background: #00ffff22;
+    color: #0ff;
+    font-size: 1.2rem;
+    border-radius: 12px;
+    cursor: pointer;
+    box-shadow:
+      0 0 8px #00ffffaa,
+      0 0 20px #00ffff55;
+    transition: background 0.3s ease, box-shadow 0.3s ease;
+    user-select: none;
+    z-index: 1000;
+  }
+
+  #adminBtn:hover {
+    background: #00ffff44;
+    box-shadow:
+      0 0 12px #00ffffee,
+      0 0 30px #00ffffdd;
+  }
+
+  /* Overlay for modals */
+  #overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 15, 30, 0.85);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 999;
+    backdrop-filter: blur(10px);
+  }
+
+  /* Login Modal */
+  #loginModal {
+    background: #002f4b;
+    border-radius: 20px;
+    padding: 30px 40px;
+    width: 320px;
+    box-shadow:
+      0 0 15px #00ffffcc,
+      inset 0 0 20px #00ffff88;
+    text-align: center;
+  }
+
+  #loginModal h2 {
+    margin: 0 0 20px;
+    color: #00ffff;
+    text-shadow: 0 0 8px #00ffffaa;
+  }
+
+  .inputField {
+    width: 100%;
+    padding: 12px 15px;
+    margin-bottom: 20px;
+    border-radius: 10px;
+    border: none;
+    background: #004a6e;
+    color: #00ffff;
+    font-size: 1rem;
+    box-shadow: inset 0 0 10px #00ffff88;
+    outline: none;
+    transition: background 0.3s ease;
+  }
+
+  .inputField::placeholder {
+    color: #00ccccaa;
+  }
+
+  .inputField:focus {
+    background: #007dbd;
+    box-shadow: 0 0 12px #00ffffee;
+  }
+
+  #loginBtn {
+    width: 100%;
+    padding: 12px 0;
+    background: #00ffff;
+    border: none;
+    border-radius: 15px;
+    color: #002f4b;
+    font-weight: bold;
+    font-size: 1.1rem;
+    cursor: pointer;
+    box-shadow: 0 0 20px #00ffffcc;
+    transition: background 0.3s ease;
+  }
+
+  #loginBtn:hover {
+    background: #00e5e5;
+  }
+
+  #errorMsg {
+    color: #ff2f2f;
+    font-weight: bold;
+    margin-top: -15px;
+    margin-bottom: 15px;
+    height: 18px;
+    text-shadow: 0 0 6px #ff2f2f88;
+  }
+
+  /* Admin GUI */
+  #adminGUI {
+    position: fixed;
+    inset: 0;
+    background: linear-gradient(135deg, #001622, #003b5c);
+    display: none;
+    flex-direction: column;
+    color: #00ffff;
+    padding: 40px;
+    font-size: 1.1rem;
+    user-select: none;
+    overflow-y: auto;
+    z-index: 999;
+
+    /* Center children horizontally */
+    align-items: center;
+  }
+
+  /* Center the close button horizontally */
+  #closeAdminBtn {
+    background: transparent;
+    border: none;
+    font-size: 3rem;
+    color: #00ffffaa;
+    cursor: pointer;
+    transition: color 0.3s ease;
+    user-select: none;
+    margin-bottom: 20px;
+
+    align-self: center;
+  }
+
+  #closeAdminBtn:hover {
+    color: #00ffff;
+  }
+</style>
+</head>
+<body>
+
+<button id="adminBtn">Admin</button>
+
+<div id="overlay">
+  <div id="loginModal">
+    <h2>Admin Login</h2>
+    <input type="text" id="username" class="inputField" placeholder="Username" autocomplete="off" />
+    <input type="password" id="password" class="inputField" placeholder="Password" autocomplete="off" />
+    <div id="errorMsg"></div>
+    <button id="loginBtn">Login</button>
+  </div>
+</div>
+
+<div id="adminGUI">
+  <button id="closeAdminBtn" title="Close Admin Panel">&times;</button>
+  <!-- Blank admin GUI content -->
+</div>
+
+<script>
+  const adminBtn = document.getElementById('adminBtn');
+  const overlay = document.getElementById('overlay');
+  const loginModal = document.getElementById('loginModal');
+  const loginBtn = document.getElementById('loginBtn');
+  const usernameInput = document.getElementById('username');
+  const passwordInput = document.getElementById('password');
+  const errorMsg = document.getElementById('errorMsg');
+  const adminGUI = document.getElementById('adminGUI');
+  const closeAdminBtn = document.getElementById('closeAdminBtn');
+
+  // Open login modal on admin button click
+  adminBtn.addEventListener('click', () => {
+    overlay.style.display = 'flex';
+    usernameInput.value = '';
+    passwordInput.value = '';
+    errorMsg.textContent = '';
+    usernameInput.focus();
+  });
+
+  // Handle login check
+  loginBtn.addEventListener('click', () => {
+    const user = usernameInput.value.trim();
+    const pass = passwordInput.value;
+
+    if (user.toLowerCase() === 'admin' && pass === 'Landon') {
+      // Correct login
+      overlay.style.display = 'none';
+      adminGUI.style.display = 'flex';
+    } else {
+      errorMsg.textContent = 'Invalid username or password';
+      passwordInput.value = '';
+      passwordInput.focus();
+    }
+  });
+
+  // Allow pressing Enter to login
+  [usernameInput, passwordInput].forEach(input => {
+    input.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        loginBtn.click();
+      }
+    });
+  });
+
+  // Close admin GUI
+  closeAdminBtn.addEventListener('click', () => {
+    adminGUI.style.display = 'none';
+  });
+
+  // Optional: Close login modal if click outside modal
+  overlay.addEventListener('click', (e) => {
+    if (e.target === overlay) {
+      overlay.style.display = 'none';
+    }
+  });
+</script>
+
+</body>
+</html>
